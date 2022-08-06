@@ -7,8 +7,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// Workers configures a task executor with the most number of tasks to be executed in parallel.
-type Workers struct {
+// Workforce configures a task executor with the most number of tasks to be executed in parallel.
+type Workforce struct {
 	sem chan struct{}
 }
 
@@ -24,7 +24,7 @@ type Runner interface {
 
 type errGroupRunner struct {
 	*errgroup.Group
-	w   *Workers
+	w   *Workforce
 	ctx context.Context
 }
 
@@ -42,15 +42,15 @@ func (g *errGroupRunner) Run(fn func() error) {
 	})
 }
 
-// New creates a new Workers with the given number of workers.
-func New(numWorkers int) *Workers {
-	return &Workers{
+// New creates a new Workforce with the given number of workers.
+func New(numWorkers int) *Workforce {
+	return &Workforce{
 		sem: make(chan struct{}, numWorkers),
 	}
 }
 
 // Start starts a new Runner.
-func (w *Workers) Start(ctx context.Context) (Runner, context.Context) {
+func (w *Workforce) Start(ctx context.Context) (Runner, context.Context) {
 	g, ctx := errgroup.WithContext(ctx)
 	return &errGroupRunner{
 		Group: g,
